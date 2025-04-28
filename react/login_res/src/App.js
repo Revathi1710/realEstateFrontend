@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import  Header from './components/Header';
 import Home from './components/index';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -12,6 +13,13 @@ import Logout from './components/logout';
 import vendorLogout from './Vendors/logout';
 import TextEditor from './components/TextEditor';
 import CurrencyConverter from './components/Geolocation';
+import PrimaryDetails from './components/primarydetails';
+import LocationDetails from './components/LocationDetails';
+import PropertyProfile from  './components/PropertyProfile';
+import PropertyImage from  './components/PropertyImage';
+import Pricedetails from './components/Pricedetails';
+import PropertyPreview from './components/propertyPreview';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import './SuperAdmin/sidebar.css';
@@ -112,7 +120,7 @@ function App() {
         {/* Define application routes */}
         <Routes>
           {/* Default route based on login status */}
-          
+          <Route path='header' element={<Header/>}/>
           {/* <Route path="/" element={isLoggedIn === 'true' ? <UserDetails /> : <Login />} /> */}
           <Route path="/CurrencyConverter" element={< CurrencyConverter  />} /> 
           {/* Login route */}
@@ -123,7 +131,12 @@ function App() {
           <Route path="/vendor/logout" element={<vendorLogout />} />
           <Route path="/TextEditor" element={<TextEditor />} />
           <Route path="/search" element={<SearchNavbar />} />
-
+          <Route path="/postproperty/primarydetails" element={<PrimaryDetails />} />
+          <Route path="/postproperty/locationDetails" element={<LocationDetails />} />
+          <Route path="/postproperty/propertyProfile" element={<PropertyProfile />} />
+          <Route path="/postproperty/PropertyImage" element={<PropertyImage />} />
+          <Route path='/postproperty/Pricedetails' element={<Pricedetails />}/>
+          <Route path='/propertyPreview/:id' element={<PropertyPreview />}/>
           
           {/* User Details route */}
           <Route path="/userDetails" element={<UserDetails />} />

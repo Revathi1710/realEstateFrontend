@@ -255,8 +255,8 @@ const Allproducts = () => {
         </div>
         <div className="product-details">
           <h5 className='product-name-vendor'>{product.name}</h5>
-          <s>₹{product.originalPrice}</s>
-          <span className='m-2'>₹{product.sellingPrice}</span>
+        
+          <span className='m-2'>₹{product.price}</span>
           <div>
           <span className='pending-items'>
           {product.active ? 'Active' : 'Inactive'}

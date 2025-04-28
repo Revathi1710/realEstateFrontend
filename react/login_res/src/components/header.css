@@ -1,0 +1,51 @@
+:root {
+    --logo-color: #ff5a99;
+    --btn-color: #3f73d5;
+  }
+  
+
+
+
+.logonameheader{
+     font-size:20px;
+     font-weight:800;
+     color:var(--logo-color);
+}
+header a:hover {
+    color: #007bff;
+  }
+  
+  select:focus, input:focus {
+    outline: none;
+    box-shadow: none;
+  }
+  .postbtn{
+    background:var(--btn-color) !important;
+    color: white !important;
+    border: 1px solid #6a97eb;
+    border-radius: 5px !important;
+  }
+  .user-circle {
+    width: 30px;
+    height: 30px;
+    background-color:var(--logo-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  
+  .login-icon i {
+    color:var(--logo-color);
+    cursor: pointer;
+  }
+  
+  .user-circle:hover,
+  .login-icon:hover {
+    opacity: 0.8;
+  }
+  

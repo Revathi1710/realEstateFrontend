@@ -3,8 +3,8 @@
   height: 86vh;
   display: flex
 ;
-  align-items: center;
-  justify-content: center;
+  
+  justify-content:space-around;
  
 }
 
@@ -39,8 +39,8 @@
   color: #5f6362;
 }
 .signup-title{
-  font-size: 1.8rem;
-  font-weight: bold;
+  font-size: 20px;
+ font-weight:600;
   color: #5f6362;
 }
 
@@ -164,9 +164,28 @@ a:hover {
   height: 86vh;
   display: flex
 ;
-  align-items: center;
-  justify-content: center;
 
+  justify-content:space-around;
+
+}
+.containersignup{
+  max-width:1500px;
+  margin-top:80px !important;
+}
+.leftsidebanner{
+  align-items:flex-start;
+  justify-items: flex-start;
+
+}
+.unordersignup{
+  text-align:left;
+}
+.unordersignup h5{
+  font-weight:600;
+}
+.signupheader{
+  font-weight:bold;
+  font-size:35px;
 }
 .slidertitlesign{
   font-weight: 600;

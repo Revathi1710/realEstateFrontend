@@ -4,6 +4,7 @@ import Signupslider1 from '../icons/signupslider1.png';
 import Signupslider2 from '../icons/signupslider2.2.png';
 import Slider from 'react-slick';
 import forgotpass from '../icons/forgotpass.png';
+import leftsideimage from '../icons/realestatesingup.png';
 
 import { Link } from 'react-router-dom';
 
@@ -171,20 +172,34 @@ export default class SignUp extends Component {
      <div >
 
          <Navbar />
-         <div
+         <div className="mt-4 containersignup row backgroundImagesignuppage">
+    <div class="col-sm-7 leftsidebanner">
+      <h2 class="signupheader mb-5">Sell Or Rent Your Property </h2>
+      <ul className="unordersignup">
+      <li className="mb-3"><h5>✅ Post Property for Free</h5>
+           
+             </li>
+
+       <li className="mb-3"><h5>🔄 Unlimited Buyer Enquiries</h5>
+      
+</li>
+        <li className="mb-3"> <h5>📈 High Visibility Listings</h5>
        
-        className="backgroundImagesignuppage"
-      >
-    
+</li>
+      <li className="mb-3"><h5>🕒 24/7 Dashboard Access</h5>
+      </li>
+</ul>
+<img src={ leftsideimage } />
+    </div>
       
-      
+      <div className="col-sm-4">
        
           {!formSubmitted ? (
             <form onSubmit={this.handleSubmit} className='formbox'>
              
              
              <div className="form-container signupform ">
-              <h3 className='mt-2 signup-title'>Signup</h3>
+              <h6 className='mt-2 signup-title'>Start Posting Your Property</h6>
 
   <div className="mb-3 input-group">
     <span className="input-group-text">
@@ -317,7 +332,7 @@ export default class SignUp extends Component {
              
               </div>
             </div>
-          )}
+          )}</div>
        </div>
       </div>
     );

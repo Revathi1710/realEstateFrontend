@@ -1,0 +1,70 @@
+.preview-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 20px;
+  }
+  
+  .preview-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    width: 90%;
+    max-width: 1200px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .preview-image img {
+    width: 100%;
+    max-width: 400px;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .preview-details {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .preview-details h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .preview-details p {
+    margin: 8px 0;
+    color: #555;
+  }
+  
+  .preview-details h3 {
+    margin-top: 10px;
+    color: #007bff;
+  }
+  
+  .preview-buttons {
+    margin-top: 20px;
+  }
+  
+  .btn-edit {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+  
+  .btn-edit:hover {
+    background-color: #0056b3;
+  }
+  
+  .loading {
+    font-size: 18px;
+    color: #555;
+  }
+  

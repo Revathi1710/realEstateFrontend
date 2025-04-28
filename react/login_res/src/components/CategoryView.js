@@ -294,10 +294,10 @@ const [maxPrice, setMaxPrice] = useState('');
                       <p>{product.location}</p>
 
                       <div className="d-flex gap-3 flex-wrap mb-2">
-                        <span className="text-muted"><FaBed /> {product.bedrooms} BHK</span>
-                        <span className="text-muted"><FaRulerCombined /> {product.overallSize}</span>
-                        <span className="text-muted"><FaHome /> {product.propertyType}</span>
-                        <span className="text-muted"><FaTools /> {product.constructionStatus}</span>
+                        <span className="text-muted"><FaBed /> {product.noBedroom} BHK</span>
+                        <span className="text-muted"><FaRulerCombined /> {product.overallSize} sq.ft</span>
+                        <span className="text-muted"><FaHome /> {product.Typeofproperty}</span>
+                        <span className="text-muted"><FaTools /> {product.ConstructionStatus}</span>
                       </div>
 
                       <p className="card-text text-muted pricedetailscategory">₹{product.price}</p>

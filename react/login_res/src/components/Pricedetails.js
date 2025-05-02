@@ -18,6 +18,8 @@ function Pricedetails() {
   const [annualDues, setAnnualDues] = useState('');
   const [maintancewish, setmaintancewish] = useState('');
   const [aboutproperty, setaboutproperty] = useState('');
+  const [pricePersqft, setpricePersqft] = useState('');
+  
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -44,6 +46,7 @@ function Pricedetails() {
         priceNegotiable,
         maintenance,
         expectedRental,
+        pricePersqft,
         bookingAmount,
         annualDues,
         maintancewish,
@@ -103,7 +106,8 @@ function Pricedetails() {
 
             {/* Price Details */}
             <h5 className='mt-5 fw-bold'>Price Details</h5>
-            <div className="form-floating mb-4">
+            <div className='row'>
+            <div className="form-floating mb-4 col-sm-6 twofields">
               <input
                 type="text"
                 className="form-control"
@@ -114,7 +118,17 @@ function Pricedetails() {
               />
               <label htmlFor="ExpectedPriceInput">Expected Price</label>
             </div>
-
+            <div className="form-floating mb-4 col-sm-6 twofields">
+              <input
+                type="text"
+                className="form-control"
+                id="pricePersqftInput"
+                placeholder="Price Per Sq.ft"
+                value={pricePersqft}
+                onChange={(e) => setpricePersqft(e.target.value)}
+              />
+              <label htmlFor="pricePersqftInput me-2">Price Per Sq.ft</label>
+            </div></div>
             {/* Checkboxes */}
             <div className="mb-4">
               <div className="form-check">

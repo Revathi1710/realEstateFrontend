@@ -88,7 +88,7 @@ function PropertyImage() {
       if (updateResponse.data.status === 'ok') {
         toast.success('Images and video uploaded successfully!');
         setTimeout(() => {
-          navigate('/postproperty/propertyImages');
+          navigate('/postproperty/Pricedetails');
         }, 1500);
       } else {
         toast.error('Failed to upload images and video.');

@@ -55,7 +55,7 @@ const AllProducts = ({ location }) => {
  
     const fetchProducts = async () => {
       try {
-        let url = `${process.env.REACT_APP_API_URL}/getFeactureProductsHome`;
+        let url = `${process.env.REACT_APP_API_URL}/getFeacturePropertyHome`;
         const response = await axios.get(url);
         const data = response.data;
 
@@ -104,17 +104,26 @@ const AllProducts = ({ location }) => {
           <div key={index} className="col-lg-3 col-md-4 col-sm-6 mb-4 feacture-product-card">
             <div className="card  cardImageContainer h-100">
               <div className='card-imagehomecontainer '>
-                <img 
-                  src={product.image ? `${process.env.REACT_APP_API_URL}/${product.image.replace('\\', '/')}` : "path_to_default_image.jpg"} 
-                  className="card-img-top homeproductimage" 
-                  alt={product.name || "default"}
-                />
-                
+               
+                   {product.PropertyImages && product.PropertyImages.length > 0 ? (
+                      <Link to={`/ProductView/${product._id}`}>
+                <img
+                  src={`${process.env.REACT_APP_API_URL}/${product.PropertyImages[0].replace('\\', '/')}`}
+                  alt="Property"   className="card-img-top homeproductimage" 
+                />   </Link>
+              ) : (
+                <Link to={`/ProductView/${product._id}`}>
+                <img
+                  src="path_to_default_image.jpg" // Default image in case PropertyImages is empty
+                  alt="Default Property"   className="card-img-top homeproductimage" 
+                /> </Link>
+              )}
+           
               </div>
            
               <div className="card-body home-product-card">
                 <Link to={`/ProductView/${product._id}`} className="card-title ellipsis2 home-product-title">
-                  <h5 className='feacture-product-name'>{product.name}</h5>
+                  <h5 className='feacture-product-name'>{product.expectedPrice}</h5>
                 </Link>
                 {product.vendorDetails ? (
                     

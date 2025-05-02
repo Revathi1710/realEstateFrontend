@@ -19,11 +19,13 @@ function PropertyProfile() {
   const [availabilityStatus, setAvailabilityStatus] = useState('');
   const [ageOfProperty, setAgeOfProperty] = useState('');
   const [FloorNumber,setFloorNumber]=useState('');
+  const [Propertyfacing,setPropertyfacing]=useState('');
+ 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const [showAdditionalBedroom, setShowAdditionalBedroom] = useState(false); // State to toggle visibility of additional bedroom input field
   const [additionalBedrooms, setAdditionalBedrooms] = useState(''); // State to track additional bedrooms
-
+  const [PropertyNearby,setPropertyNearby ]= useState([]);
   const addOtherBedroom = () => {
     setShowAdditionalBedroom(true); // Show the additional bedroom input field
   };
@@ -38,6 +40,16 @@ function PropertyProfile() {
       }
     });
   };
+  const handlePropertyNearby = (room) => {
+    setPropertyNearby((prevRooms) => {
+      if (prevRooms.includes(room)) {
+        return prevRooms.filter((r) => r !== room);
+      } else {
+        return [...prevRooms, room];
+      }
+    });
+  };
+  
 
   const handleContinue = async (e) => {
     e.preventDefault();
@@ -54,20 +66,24 @@ function PropertyProfile() {
         bedrooms,
         bathrooms,
         balconies,
+        
         carpetArea,
         buildUpArea,
         superBuildUpArea,
         propertyFloor,
+        otherRooms,
         FloorNumber,
         availabilityStatus,
-        ageOfProperty
+        ageOfProperty,
+        Propertyfacing,
+        PropertyNearby
       });
 
       // Check the response from the server
       if (updateResponse.data.status === 'ok') {
         toast.success('Profile details updated successfully!');
         setTimeout(() => {
-          navigate('/postproperty/propertyImages'); // Move to the next page
+          navigate('/postproperty/propertyImage'); // Move to the next page
         }, 1500);
       } else {
         toast.error('Failed to update location details.');
@@ -299,7 +315,36 @@ function PropertyProfile() {
                 ))}
               </div>
             </div>
-
+            
+            <div className="mb-4">
+        <label className="form-label fw-bold">Property Facing</label>
+        <div className="d-flex gap-3">
+        {["North", "South", "East", "West","North-East","North-West","South-East","South-West"].map((option) => (
+                  <button
+                    key={option}
+                    className={`btn ${Propertyfacing === option ? 'btn-otpion' : 'btn-outlinebtn'}`}
+                    onClick={() => setPropertyfacing(option)}
+                  >
+                    {option}
+                  </button>
+                ))}
+        
+        </div>
+      </div>
+      <div className="mb-4">
+        <label className="form-label fw-bold">Nearby</label>
+        <div className="d-flex gap-3">
+          {["Close to Metro Station", "Close to School", "Close to Market", "Close to Hosptial","Close to Airport","Close to Railway Station","Close to Highway","Close to Mall"].map((option) => (
+            <button
+              key={option}
+              className={`btn ${PropertyNearby.includes(option) ? 'btn-otpion' : 'btn-outlinebtn'}`}
+              onClick={() => handlePropertyNearby(option)}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      </div>
             {/* Continue Button */}
             <button
               className="btn btn-primary"

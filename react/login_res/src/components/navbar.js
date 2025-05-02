@@ -83,7 +83,7 @@ function Header() {
             {getFirstLetter(userName)}
           </Link>
         ) : (
-          <Link to="/Signup" className="login-icon" title="Login / Signup">
+          <Link to="/Vendor/Signup" className="login-icon" title="Login / Signup">
            <i class='far fa-user-circle fs-4'></i>
           </Link>
         )}
@@ -92,7 +92,7 @@ function Header() {
     <button className="btn postbtn">Post Property</button>
   </Link>
 ) : (
-  <Link to="/Signup" className="login-icon">
+  <Link to="/Vendor/Signup" className="login-icon">
     <button className="btn postbtn">Post Property</button>
   </Link>
 )}

@@ -19,6 +19,7 @@ import PropertyProfile from  './components/PropertyProfile';
 import PropertyImage from  './components/PropertyImage';
 import Pricedetails from './components/Pricedetails';
 import PropertyPreview from './components/propertyPreview';
+import BuilderEnquiryList from './Vendors/BuilderEnquiry';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -82,6 +83,7 @@ import ResetPassword from './Vendors/ResetPassword';
 import VendorSelectPlan from './Vendors/PlanDetails';
 import UserProfile from './Vendors/UserProfile';
 import VendorHeader from './Vendors/vendorHeader';
+import MyHomepage from './Vendors/MyHomepage';
 
 import SelectBusiness from './Vendors/Business';
 import AddService from './Vendors/AddService';
@@ -205,6 +207,8 @@ function App() {
           <Route path="/Vendor/BusinessProfile" element={<  BusinessProfile />} />
           <Route path="/Vendor/AddProductVendor" element={<  AddProductVendor2 />} />
           <Route path="/Vendor/MyOrders" element={<  MyOrders />} />
+          <Route path="/MyHomepage" element={<  MyHomepage />} />
+          <Route path="/BuilderEnquiry" element={<  BuilderEnquiryList />}  />
           
           
           <Route path="/Vendor/Websitepage" element={<  WebsitePage />} />

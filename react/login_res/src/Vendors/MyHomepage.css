@@ -1,0 +1,48 @@
+.my-dashboard {
+    height: 100vh;
+    background-color: #f5f5f5;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background-color: #1d2d50;
+  }
+  
+  .topbar .nav-link {
+    font-weight: bold;
+    margin: 0 10px;
+    cursor: pointer;
+  }
+  
+  .user-icon {
+    font-size: 14px;
+    margin-left: 10px;
+  }
+  
+  .card-body h6 {
+    font-weight: bold;
+  }
+  
+  .card {
+    border: 1px solid #ddd;
+  }
+  .bodymyhomepage{
+    background: rgb(228, 231, 236);
+  }
+  .myhomelist-a{
+  
+    font-size:13px;
+    text-decoration: none;
+    color: #a2abb8 !important;
+    font-weight: 500;
+    margin-left: 20px;
+    cursor: pointer;
+  }
+  .user-info-sidebar{
+    background: #253858;
+    padding: 10px 15px 13px 15px;
+    color: #cacfd7;
+    position: relative;
+  }
+ 
+  

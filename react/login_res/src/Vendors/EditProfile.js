@@ -1,150 +1,98 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
-import Sidebar from './Vendorsidebar '; // Ensure this path is correct
-import '../SuperAdmin/addcategory.css';
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from 'react-router-dom';
+import Navbar from '../components/navbar';
+import './MyHomepage.css';
 
-const UpdateProfileVendor = () => {
-  const { vendorId } = useParams();
-  const navigate = useNavigate();
-  const [vendorData, setVendorData] = useState({
-    fname: '',
-    email: '',
-    number: '',
-    businessName: '',
-  });
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const vendortoken = window.localStorage.getItem('vendortoken');
-
-    if (!vendortoken) {
-      setError('No token found');
-      return;
-    }
-
-    axios.post(`${process.env.REACT_APP_API_URL}/vendorData`, { vendortoken })
-      .then(response => {
-        if (response.data.status === 'ok') {
-          setVendorData(response.data.data);
-        } else {
-          setError(response.data.message);
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        setError(error.message);
-      });
-  }, [vendorId]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setVendorData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const vendortoken = window.localStorage.getItem('vendortoken');
-  
-    axios.put(`${process.env.REACT_APP_API_URL}/vendor/${vendorId}`, vendorData, {
-      headers: { 'Authorization': `Bearer ${vendortoken}` }
-    })
-    .then(response => {
-      if (response.data.status === 'ok') {
-        navigate('/Vendor/Dashboard');
-      } else {
-        setError(response.data.message);
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      setError(error.message);
-    });
-  };
-  
-
+function EditProfile() {
   return (
-    <div className="update-profile-vendor">
-      <Sidebar />
-      <div className="content" style={{ marginLeft: '250px' }}>
-        <h2>Update Profile</h2>
-        {error && <p className="error">{error}</p>}
-        <div className="form-container">
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <div className="mb-3">
-                <div className="labelcontainer mb-3">
-                  <label htmlFor="fname">First Name:</label>
-                </div>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="fname"
-                  name="fname"
-                  value={vendorData.fname}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <div className="mb-3">
-                <div className="labelcontainer mb-3">
-                  <label htmlFor="email">Email:</label>
-                </div>
-                <input
-                  type="email"
-                  className="form-control"
-                  id="email"
-                  name="email"
-                  value={vendorData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <div className="mb-3">
-                <div className="labelcontainer mb-3">
-                  <label htmlFor="phone">Mobile Number:</label>
-                </div>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="phone"
-                  name="number"
-                  value={vendorData.number}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <div className="mb-3">
-                <div className="labelcontainer mb-3">
-                  <label htmlFor="businessName">Business Name:</label>
-                </div>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="businessName"
-                  name="businessName"
-                  value={vendorData.businessName}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-            <button type="submit" className="submit-btn">Update Profile</button>
+    <>
+    <Navbar />
+     <div className="bodymyhomepage">
+     <div className="container d-flex " style={{ height: '100vh', textAlign: 'left' }}>
+   
+         {/* Sidebar */}
+         <div className="bg-dark text-white sidebarmyhomepage" style={{ width: '200px' }}>
+           <div className="user-info-sidebar">
+           <h5>Rajesh</h5>
+          
+           </div>
+           <hr />
+           <ul className="list-unstyled myhomelist">
+             <li><Link to="" className="myhomelist-a">My Homepage</Link></li>
+             <li className="mt-3" ><Link to=""className="myhomelist-a" >All Product</Link></li>
+             <li className="mt-3" ><Link to=""className="myhomelist-a" >All Enquiry</Link></li>
+           </ul>
+         </div>
+   
+         {/* Main Content */}
+         <div className="flex-grow-1 sidebarmyhomepage">
+          <div className="card shadow-sm rounded-4">
+            <div className="card-body">
+              <h4 className="mb-4">Edit Profile</h4>
 
-          </form>
+              <form>
+                <div className="row g-3">
+                  <div className="col-md-6">
+                    <label className="form-label">You are<span className="text-danger">*</span></label>
+                    <input type="text" className="form-control" defaultValue="Dealer" />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label">Name<span className="text-danger">*</span></label>
+                    <input type="text" className="form-control" defaultValue="Rajesh" />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label">Email ID<span className="text-danger">*</span></label>
+                    <input type="email" className="form-control" defaultValue="officearistos1@gmail.com" />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label">Company Name</label>
+                    <div className="d-flex align-items-center">
+                      <input type="text" className="form-control me-2" defaultValue="Individual Consultant" />
+                      <a href="#" className="text-primary">Change</a>
+                    </div>
+                  </div>
+                  {[1, 2, 3].map((_, index) => (
+                    <div className="col-md-6" key={index}>
+                      <label className="form-label">Phone Number</label>
+                      <div className="d-flex">
+                        <select className="form-select w-25 me-2">
+                          <option>+91 IND</option>
+                        </select>
+                        <input type="text" className="form-control" placeholder="Phone Number" />
+                      </div>
+                    </div>
+                  ))}
+                  <div className="col-12">
+                    <div className="form-check">
+                      <input className="form-check-input" type="checkbox" id="whatsapp" />
+                      <label className="form-check-label" htmlFor="whatsapp">
+                        Allow buyers to WhatsApp me on this number
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label">Company URL</label>
+                    <input type="text" className="form-control" placeholder="Company URL" />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label">Company Profile<span className="text-danger">*</span></label>
+                    <input type="text" className="form-control" defaultValue="Individual Consultant" />
+                  </div>
+                </div>
+
+                <div className="mt-4 text-end">
+                  <button className="btn btn-primary px-4">Save Changes</button>
+                </div>
+              </form>
+
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </div> 
+    </>
   );
-};
+}
 
-export default UpdateProfileVendor;
+export default EditProfile;

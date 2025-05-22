@@ -1,23 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './PrimaryDetails.css';
 import Navbar from '../components/navbar';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // import CSS
+import 'react-toastify/dist/ReactToastify.css';
 
 function PrimaryDetails() {
   const [userName, setUserName] = useState('');
   const [lookingTo, setLookingTo] = useState('');
   const [propertyType, setPropertyType] = useState('Residential');
   const [selectedPropertyOption, setSelectedPropertyOption] = useState('');
+  const [propertyOptions, setPropertyOptions] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const propertyOptions = [
-    "Flat/Apartment", "Independent House / Villa", "Independent / Builder Floor",
-    "Plot / Land", "1 RK/ Studio Apartment", "Serviced Apartment", "Farmhouse", "Other"
-  ];
+  // Fetch property options
+  useEffect(() => {
+    const fetchPropertyOptions = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/getcategoriesMain`);
+        if (!response.ok) throw new Error('Failed to fetch categories');
+        const result = await response.json();
+        if (result.status === 'ok' && Array.isArray(result.data)) {
+          setPropertyOptions(result.data);
+        } else {
+          console.error('Invalid response for categories:', result);
+        }
+      } catch (error) {
+        console.error('Error fetching property options:', error);
+      }
+    };
 
+    fetchPropertyOptions();
+  }, []);
+
+  // Fetch user/vendor name
   useEffect(() => {
     const fetchUserName = async () => {
       try {
@@ -48,6 +65,7 @@ function PrimaryDetails() {
     fetchUserName();
   }, []);
 
+  // Form submission
   const handleContinue = async () => {
     if (!lookingTo) {
       toast.error('Please select what you are looking to do.');
@@ -57,18 +75,19 @@ function PrimaryDetails() {
       toast.error('Please select your property type.');
       return;
     }
-  
+
     setIsSubmitting(true);
-  
+
     try {
       const vendorId = localStorage.getItem('vendorId');
-  
       if (!vendorId) {
         toast.error('Vendor ID missing!');
         setIsSubmitting(false);
         return;
       }
-  
+
+      const selectedOptionObj = propertyOptions.find(option => option._id === selectedPropertyOption);
+
       const response = await fetch(`${process.env.REACT_APP_API_URL}/addProperty`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -76,20 +95,18 @@ function PrimaryDetails() {
           vendorId,
           lookingFor: lookingTo,
           kindofProperty: propertyType,
-          kindofPropertyDetails: selectedPropertyOption,
+          categoryId: selectedPropertyOption,
+          kindofPropertyDetails: selectedOptionObj?.name || '',
         }),
       });
-  
+
       const result = await response.json();
-  
+
       if (result.status === 'ok') {
-        // Store only the _id of the newly added property in localStorage
         localStorage.setItem('propertyId', result._id);
-  
-        // Success message and navigate after 1.5 seconds
         toast.success('Property added successfully!', {
           autoClose: 1500,
-          onClose: () => navigate('/postproperty/locationDetails'),  // Navigate to locationDetails
+          onClose: () => navigate('/postproperty/locationDetails'),
         });
       } else {
         toast.error(result.message || 'Failed to add property!');
@@ -101,10 +118,7 @@ function PrimaryDetails() {
       setIsSubmitting(false);
     }
   };
-  
-  
-  
-  
+
   
 
   return (
@@ -187,15 +201,16 @@ function PrimaryDetails() {
             {/* Property Options */}
             <div className="mb-4">
               <div className="d-flex flex-wrap gap-2">
-                {propertyOptions.map((option) => (
-                  <button
-                    key={option}
-                    className={`btn ${selectedPropertyOption === option ? 'btn-otpion' : 'btn-outlinebtn'}`}
-                    onClick={() => setSelectedPropertyOption(option)}
-                  >
-                    {option}
-                  </button>
-                ))}
+         {propertyOptions.map((option) => (
+              <button
+                key={option._id}
+                className={`btn ${selectedPropertyOption === option._id ? 'btn-otpion' : 'btn-outlinebtn'}`}
+                onClick={() => setSelectedPropertyOption(option._id)}
+              >
+                {option.name}
+              </button>
+            ))}
+
               </div>
             </div>
 

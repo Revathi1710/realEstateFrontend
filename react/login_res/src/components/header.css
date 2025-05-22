@@ -48,4 +48,9 @@ header a:hover {
   .login-icon:hover {
     opacity: 0.8;
   }
+  .header-sticky{
+  position: sticky;
+  z-index:1000;
+  top:0;
+}
   

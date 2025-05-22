@@ -92,7 +92,7 @@ const Allproducts = () => {
 }, []);
 
   const handleUpdate = (productId) => {
-    window.location.href = `/Vendor/UpdateProduct/${productId}`;
+    window.location.href = `/UpdateProperty/${productId}`;
   };
   const handleLogout = () => {
     localStorage.removeItem('vendorId'); // Remove vendorId
@@ -104,7 +104,7 @@ const Allproducts = () => {
 
   const handleDelete = (productId) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
-      fetch(`${process.env.REACT_APP_API_URL}/deleteProductVendor`, {
+      fetch(`${process.env.REACT_APP_API_URL}/deletePropertyVendor`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

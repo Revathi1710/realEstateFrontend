@@ -4,12 +4,15 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './PrimaryDetails.css';
 import Navbar from '../components/navbar';
-import axios from 'axios'; // Import Axios
+import axios from 'axios';
+
+const LOCATIONIQ_API_KEY = 'YOUR_LOCATIONIQ_API_KEY'; // Replace with your key
 
 function LocationDetails() {
   const [userName, setUserName] = useState('');
   const [city, setCity] = useState('Chennai');
   const [locality, setLocality] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,22 +25,13 @@ function LocationDetails() {
 
         const response = await fetch(`${process.env.REACT_APP_API_URL}/getName`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId, vendorId }),
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
         const result = await response.json();
-
-        if (result.status === 'ok' && result.data && result.data.fname) {
+        if (result.status === 'ok' && result.data?.fname) {
           setUserName(result.data.fname);
-        } else {
-          console.error('Error in API response:', result.message || 'No name found');
         }
       } catch (error) {
         console.error('Error fetching name:', error);
@@ -47,26 +41,44 @@ function LocationDetails() {
     fetchUserName();
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSearch = async (e) => {
+    const value = e.target.value;
+    setLocality(value);
+
+    if (value.length < 3) {
+      setSuggestions([]);
+      return;
+    }
 
     try {
-      // Retrieve the propertyId from local storage
-      let propertyId = localStorage.getItem('propertyId');
-      
-      // Send the update request using Axios
-      const updateResponse = await axios.put(`${process.env.REACT_APP_API_URL}/updatePropertyLocation`, {
-        propertyId,
-        city,
-        locality,
-      });
+      const res = await fetch(
+        `https://api.locationiq.com/v1/autocomplete?key=${LOCATIONIQ_API_KEY}&q=${value}&limit=5&normalizeaddress=1`
+      );
+      const data = await res.json();
+      setSuggestions(data);
+    } catch (err) {
+      console.error('Autocomplete error:', err);
+    }
+  };
 
-      // Check the response from the server
+  const handleSelect = (place) => {
+    setLocality(place.display_name);
+    setSuggestions([]);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const propertyId = localStorage.getItem('propertyId');
+
+      const updateResponse = await axios.put(
+        `${process.env.REACT_APP_API_URL}/updatePropertyLocation`,
+        { propertyId, city, locality }
+      );
+
       if (updateResponse.data.status === 'ok') {
         toast.success('Location details updated successfully!');
-        setTimeout(() => {
-          navigate('/postproperty/propertyProfile'); // Move to the next page
-        }, 1500);
+        setTimeout(() => navigate('/postproperty/propertyProfile'), 1500);
       } else {
         toast.error('Failed to update location details.');
       }
@@ -91,7 +103,6 @@ function LocationDetails() {
               <div className="step">Photos, Videos & Voice-over</div>
               <div className="step">Pricing & Others</div>
             </div>
-
             <div className="mt-4">
               <div className="border p-3 rounded">
                 <h5>Property Score</h5>
@@ -107,17 +118,33 @@ function LocationDetails() {
             <p>An accurate location helps you connect with the right buyers</p>
 
             <form onSubmit={handleSubmit}>
-              <div className="form-floating mb-4">
+              <div className="form-floating mb-4 position-relative">
                 <input
                   type="text"
                   className="form-control"
                   id="localityInput"
                   placeholder="Enter your locality or apartment name"
                   value={locality}
-                  onChange={(e) => setLocality(e.target.value)}
+                  onChange={handleSearch}
                   required
+                  autoComplete="off"
                 />
                 <label htmlFor="localityInput">Locality / Apartment</label>
+
+                {suggestions.length > 0 && (
+                  <ul className="list-group position-absolute w-100 z-3" style={{ top: '100%', zIndex: '10' }}>
+                    {suggestions.map((place) => (
+                      <li
+                        key={place.place_id}
+                        className="list-group-item list-group-item-action"
+                        onClick={() => handleSelect(place)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {place.display_name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
 
               <div className="form-floating mb-4">
@@ -140,7 +167,6 @@ function LocationDetails() {
                 Continue
               </button>
             </form>
-
           </div>
         </div>
       </div>

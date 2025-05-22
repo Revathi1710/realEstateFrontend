@@ -27,7 +27,7 @@
     border: 1px solid #ddd;
   }
   .bodymyhomepage{
-    background: rgb(228, 231, 236);
+ 
   }
   .myhomelist-a{
   
@@ -44,5 +44,24 @@
     color: #cacfd7;
     position: relative;
   }
+  .leftsidebarbuilder{
+        position: fixed;
+    background: #252525;
+    width: 180px;
+    float: left;
+    height: calc(100% - 1px);
+    font-size: 11px;
+  }
+  
+     .rightdashboard{
+ float: right;
+    width: calc(100% - 180px);
+    background: #f4f5f9;
+    position: sticky;
+    min-height: calc(100vh - 72px);
+     }
+     .myhomelist{
+      text-align: left !important;
+     }
  
   

@@ -48,10 +48,10 @@ function Header() {
   };
 
   return (
-    <header className="bg-white shadow-sm px-4 py-2 d-flex justify-content-between align-items-center">
+    <header className="bg-white shadow-sm px-4 py-2 d-flex justify-content-between align-items-center header-sticky">
       {/* Left: Logo */}
       <div className="d-flex align-items-center gap-4">
-        <h1 className="logonameheader">KeyMile</h1>
+       <Link to="/"> <h1 className="logonameheader">KeyMile</h1></Link>
 
         {/* Property Types */}
         <nav className="d-none d-md-flex gap-3">
@@ -79,7 +79,7 @@ function Header() {
       {/* Right: User Icon or Name */}
       <div className="d-flex align-items-center gap-3">
         {userName ? (
-          <Link to="/dashboard" className="user-circle" title={userName}>
+          <Link to="/MyHomepage" className="user-circle" title={userName}>
             {getFirstLetter(userName)}
           </Link>
         ) : (

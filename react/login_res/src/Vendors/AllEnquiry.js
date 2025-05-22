@@ -1,206 +1,173 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
-import VendorHeader from './vendorHeader';
-import '../SuperAdmin/addcategory.css';
-import './sidebar2.css';
-import '../SuperAdmin/addcategory.css';
-import './table.css';
-import './myorder.css';
+import Navbar from '../components/navbar';
+import './MyHomepage.css';
 
 const AllEnquiry = () => {
   const [enquiries, setEnquiries] = useState([]);
   const [message, setMessage] = useState('');
-  const [error, setError] = useState(null);
-  const [activeSubMenu, setActiveSubMenu] = useState(null);
-  const [vendorData, setVendorData] = useState({ selectType: '' });
+  const [vendorData, setVendorData] = useState({});
 
   useEffect(() => {
     const vendorId = localStorage.getItem('vendorId');
+    const vendortoken = localStorage.getItem('vendortoken');
+
     if (!vendorId) {
-      alert('Vendor ID not found in local storage');
+      setMessage('Vendor ID not found. Please login again.');
       return;
     }
 
-    const vendortoken = localStorage.getItem('vendortoken');
-
+    // Fetch vendor data
     axios.post(`${process.env.REACT_APP_API_URL}/vendorData`, { vendortoken })
       .then(response => {
         if (response.data.status === 'ok') {
           setVendorData(response.data.data);
         } else {
-          setError(response.data.message);
+          setMessage(response.data.message || 'Failed to load vendor data');
         }
       })
       .catch(error => {
-        console.error('Error:', error);
-        setError(error.message);
+        console.error('Vendor fetch error:', error);
+        setMessage('Error fetching vendor data');
       });
 
-    fetch(`${process.env.REACT_APP_API_URL}/getVendorEnquiry`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ vendorId })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'ok') {
-        setEnquiries(data.data);
-      } else {
-        console.error('Error:', data.message);
-        setMessage('Error fetching enquiries: ' + data.message);
-      }
-    })
-    .catch(error => {
-      console.error('Fetch error:', error);
-      setMessage('Error fetching enquiries');
-    });
+    // Fetch enquiries
+    axios.post(`${process.env.REACT_APP_API_URL}/getVendorEnquiry`, { vendorId })
+      .then(response => {
+        if (response.data.status === 'ok') {
+          setEnquiries(response.data.data);
+        } else {
+          setMessage('Error fetching enquiries: ' + response.data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Fetch error:', error);
+        setMessage('Error fetching enquiries');
+      });
   }, []);
-
-  const handleSubMenuToggle = (index) => {
-    setActiveSubMenu(activeSubMenu === index ? null : index);
-  };
 
   const updateStatus = (enquiryId, status) => {
     axios.post(`${process.env.REACT_APP_API_URL}/updateEnquiryStatus`, { enquiryId, status })
       .then(response => {
         if (response.data.status === 'ok') {
-          setEnquiries(enquiries.map(enquiry =>
-            enquiry._id === enquiryId ? { ...enquiry, status } : enquiry
-          ));
+          setEnquiries(prev =>
+            prev.map(enq => enq._id === enquiryId ? { ...enq, status } : enq)
+          );
         } else {
-          console.error('Error updating status:', response.data.message);
           setMessage('Error updating status: ' + response.data.message);
         }
       })
       .catch(error => {
-        console.error('Error:', error);
+        console.error('Update error:', error);
         setMessage('Error updating status');
       });
   };
-
+  const formatIndianPrice = (amount) => {
+    if (amount >= 10000000) {
+      return (amount / 10000000).toFixed(2).replace(/\.00$/, '') + ' Crore';
+    } else if (amount >= 100000) {
+      return (amount / 100000).toFixed(2).replace(/\.00$/, '') + ' Lac';
+    } else if (amount >= 1000) {
+      return (amount / 1000).toFixed(2).replace(/\.00$/, '') + ' Thousand';
+    } else {
+      return amount;
+    }
+  };
   return (
-    <div>
-      <VendorHeader />
-      <div className="content row mt-4">
-        <div className='col-sm-2 mt-5'>
-        <ul className='VendorList'>
-            <li className='list'><i className="fa fa-laptop"></i> Dashboard</li>
-          </ul>
-          <ul className="nano-content VendorList">
-            <li className={`sub-menu list ${activeSubMenu === 5 ? 'active' : ''}`}>
-              <a href="#!" onClick={() => handleSubMenuToggle(5)}>
-                <i className="fa fa-cogs"></i><span>Profile</span><i className="arrow fa fa-angle-right pull-right"></i>
-              </a>
-              <ul style={{ display: activeSubMenu === 5 ? 'block' : 'none' }}>
-                <li><Link to="/Vendor/UserProfile">User Profile</Link></li>
-                <li><Link to="/Vendor/BusinessProfile">Business Profile</Link></li>
-                <li><Link to="/Vendor/BankDetails">Bank Details</Link></li>
-              </ul>
-            </li>
-            <li className={`sub-menu list ${activeSubMenu === 0 ? 'active' : ''}`}>
-              <a href="#!" onClick={() => handleSubMenuToggle(0)}>
-                <i className="fa fa-cogs"></i><span>Category</span><i className="arrow fa fa-angle-right pull-right"></i>
-              </a>
-              <ul style={{ display: activeSubMenu === 0 ? 'block' : 'none' }}>
-                <li><Link to="/Vendor/AllCategory">All Categories</Link></li>
-                <li><Link to="/Vendor/AddCategory">Add New Category</Link></li>
-              </ul>
-            </li>
-            {vendorData.selectType === "Product Based Company" && (
-    <li className={`sub-menu list ${activeSubMenu === 3 ? 'active' : ''}`}>
-      <a href="#!" onClick={() => handleSubMenuToggle(3)}>
-        <i className="fa fa-cogs"></i><span>Product</span><i className="arrow fa fa-angle-right pull-right"></i>
-      </a>
-      <ul style={{ display: activeSubMenu === 3 ? 'block' : 'none' }}>
-        <li><Link to="/Vendor/AllProduct">All Product</Link></li>
-        <li><Link to="/Vendor/AddProductVendor">Add Product</Link></li>
-      </ul>
-    </li>
-  )}
-  {vendorData.selectType === "Service Based Company" && (
-    <li className={`sub-menu list ${activeSubMenu === 1 ? 'active' : ''}`}>
-      <a href="#!" onClick={() => handleSubMenuToggle(1)}>
-        <i className="fa fa-cogs"></i><span>Service</span><i className="arrow fa fa-angle-right pull-right"></i>
-      </a>
-      <ul style={{ display: activeSubMenu === 1 ? 'block' : 'none' }}>
-        <li><Link to="/Vendor/AllService">All Service</Link></li>
-        <li><Link to="/Vendor/AddService">Add Service</Link></li>
-      </ul>
-    </li>
-  )}
-            <li className={`sub-menu list ${activeSubMenu === 2 ? 'active' : ''}`}>
-              <a href="#!" onClick={() => handleSubMenuToggle(2)}>
-                <i className="fa fa-cogs"></i><span>Enquiry</span><i className="arrow fa fa-angle-right pull-right"></i>
-              </a>
-              <ul style={{ display: activeSubMenu === 2 ? 'block' : 'none' }}>
-                <li><Link to="/Vendor/AllEnquiryVendor">All Enquiry</Link></li>
-              </ul>
-             
-            </li>
-            <ul className='VendorList'>
-            <li className='list'><Link to="/Vendor/MyOrders" className='listout'><i className="fa fa-laptop"></i>My Orders</Link></li>
-          </ul>
-          </ul>
-        </div>
-        <div className="col-sm-7">
-          <div className="title">
-            <h2>All Enquiries</h2>
+    <>
+      <Navbar />
+      <div className="bodymyhomepage">
+        <div className="container d-flex" style={{ height: '100vh' }}>
+          {/* Sidebar */}
+          <div className="bg-dark text-white sidebarmyhomepage leftsidebarbuilder">
+            <div className="user-info-sidebar">
+              <h5>{vendorData.name || 'Vendor'}</h5>
+            </div>
+            <hr />
+            <ul className="list-unstyled myhomelist">
+              <li><Link to="/MyHomepage" className="myhomelist-a">My Homepage</Link></li>
+              <li className="mt-3"><Link to="/AllProduct" className="myhomelist-a">All Product</Link></li>
+              <li className="mt-3"><Link to="/AllEnquiry" className="myhomelist-a">All Enquiry</Link></li>
+            </ul>
           </div>
-          <div className='allenquiry'>
-            {message && <p>{message}</p>}
-            {enquiries.length > 0 ? (
-              <div>
-                {enquiries.map((enquiry) => (
-                  <div className="row container ordercontainer" key={enquiry._id}>
-                    <div className='col-sm-4'>
-                      <img
-                        src={`${process.env.REACT_APP_API_URL}/${enquiry.product_id?.image.replace('\\', '/')}`}
-                        style={{ width: '200px', height: '200px' }}
-                      />
-                    </div>
-                    <div className='col-sm-8'>
-                      <div className="orderProductName">{enquiry.productname}</div>
-                      <div className="orderProductprice">₹{enquiry.productPrice}</div>
-                      <a href={`tel:${enquiry.UserNumber}`} className='sellernumber'>
-                        <div className="ordersellerdetails"><i className="fa fa-phone"></i>{enquiry.UserNumber}</div>
-                      </a>
-                    </div>
-                    <div className='row'>
-                    <button
-  className={`btn col-sm-4 ${enquiry.status === 'Completed' ? 'btn-success' : 'btn-light'}`}
-  onClick={() => updateStatus(enquiry._id, 'Completed')}
->
-  Completed
-</button>
-<button
-  className={`btn col-sm-4 ${enquiry.status === 'Cancelled' ? 'btn-danger' : 'btn-light'}`}
-  onClick={() => updateStatus(enquiry._id, 'Cancelled')}
->
-  Cancelled
-</button>
-<button
-  className={`btn col-sm-4 ${enquiry.status === 'Pending' ? 'btn-warning' : 'btn-light'}`}
-  onClick={() => updateStatus(enquiry._id, 'Pending')}
->
-  Pending
-</button>
 
-                    </div>
-                  </div>
-                ))}
+          {/* Main Content */}
+          <div className="flex-grow-1 sidebarmyhomepage">
+            <div className="p-4 rightdashboard">
+              <h2>All Enquiries</h2>
+              {message && <div className="alert alert-info">{message}</div>}
+           
+
+            <div className="allenquiry px-4">
+              {enquiries.length > 0 ? (
+                enquiries.map(enquiry => {
+                  const property = enquiry.property_id || {}; // populated object
+                  const imagePath = property.image ? `${process.env.REACT_APP_API_URL}/${property.image.replace(/\\/g, '/')}` : null;
+
+                  return (
+                    <div className="row container ordercontainer mb-4 p-3 border rounded" key={enquiry._id}>
+                      <div className="col-sm-4">
+                        {imagePath ? (
+                          <img
+                            src={imagePath}
+                            alt="Property"
+                            style={{ width: '200px', height: '200px', objectFit: 'cover' }}
+                            className="img-fluid rounded"
+                          />
+                        ) : (
+                          <div className="text-muted">No image available</div>
+                        )}
+                      </div>
+                      <div className="col-sm-8">
+                         <b className='fs-2 mb-2'>
+              ₹{formatIndianPrice(property.expectedPrice)}
+
+                <span className='sqaureprice'>@{property.pricePersqft} Sq.ft</span>
+              </b>
+              <div className='locationDetails'>
+                <h3 className="productName">{property.bedrooms}BNK {property.bathrooms} Bath</h3>
+                <p>{property.kindofPropertyDetails} for Sale</p>
+                <p>{property.locality}</p>
               </div>
-            ) : (
-              <p>No Enquiries found</p>
-            )}
+                     
+                        <a href={`tel:${enquiry.customerNumber}`} className="sellernumber d-block mt-2 text-decoration-none">
+                          <div className="ordersellerdetails text-white">
+                            <i className="fa fa-phone me-2"></i>{enquiry.customerIdNumber}
+                          </div>
+                        </a>
+
+                        {/* Status Buttons */}
+                        <div className="d-flex justify-content-start mt-3 gap-2">
+                          {['Completed', 'Cancelled', 'Pending'].map(status => (
+                            <button
+                              key={status}
+                              className={`btn ${enquiry.status === status ? (
+                                status === 'Completed' ? 'btn-success' :
+                                status === 'Cancelled' ? 'btn-danger' : 'btn-warning'
+                              ) : (
+                                status === 'Completed' ? 'btn-outline-success' :
+                                status === 'Cancelled' ? 'btn-outline-danger' : 'btn-outline-warning'
+                              )}`}
+                              onClick={() => updateStatus(enquiry._id, status)}
+                            >
+                              {status}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <p>No enquiries found.</p>
+              )}
+            </div>
           </div>
         </div>
-        <div className='col-sm-3 mt-5'>
-        </div>
-      </div>
-    </div>
+      </div> </div>
+    </>
   );
 };
 

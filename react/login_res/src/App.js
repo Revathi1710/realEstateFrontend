@@ -194,10 +194,10 @@ function App() {
         
           <Route path="/Vendor/Addproduct" element={< AddProductVendor />} /> 
           <Route path="/Vendor/AllProduct" element={< AllProductVendor />} />
-          <Route path="/Vendor/UpdateProduct/:id" element={<UpdateProductVendor />} />
+          <Route path="/UpdateProperty/:id" element={<UpdateProductVendor />} />
           <Route path="/Vendor/Dashboard" element={< VendorDashboard />} />
           <Route path="/Vendor/EditProfile" element={<  EditProfileVendor />} />
-          <Route path="/Vendor/AllEnquiryVendor" element={<  AllEnquiry  />} />
+          <Route path="/AllEnquiry" element={<  AllEnquiry  />} />
           <Route path="/Vendor/VendorSelectPlan" element={<   VendorSelectPlan  />} />
           <Route path="/Vendor/SelectBusiness" element={<   SelectBusiness  />} />
           <Route path="/Vendor/AddService" element={<   AddService  />} />

@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './categoryview.css';
 import AllHorizontalBanner from './AllHorizontalBanner';
 import { FaBed, FaRulerCombined, FaHome, FaTools } from 'react-icons/fa';
-
+import { Link } from 'react-router-dom';
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -53,21 +53,10 @@ const [maxPrice, setMaxPrice] = useState('');
       }
     };
 
-    const fetchSubcategories = async () => {
-      if (!category) return;
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/getSubCategory/${category}`);
-        if (response.data.status === 'ok') {
-          setSubcategories(response.data.data);
-        }
-      } catch (error) {
-        console.error('Error fetching subcategories:', error.message);
-      }
-    };
 
     fetchUserData();
     fetchProducts();
-    fetchSubcategories();
+ 
   }, [category]);
 
   useEffect(() => {
@@ -253,27 +242,84 @@ const [maxPrice, setMaxPrice] = useState('');
               <div key={index} className="card mb-3 shadow-sm border">
                 <div className="row g-0">
                   <div className="col-md-5">
-                    {product.galleryimages?.length > 0 ? (
-                      <div id={`carousel-${product._id}`} className="carousel slide" data-bs-ride="carousel">
+                  {product.PropertyImages?.length > 0 || product.propertyVideo ? (
+                      <div
+                        id={`carousel-${product._id}`}
+                        className="carousel slide"
+                        data-bs-ride="carousel"
+                      >
                         <div className="carousel-inner">
-                          {product.galleryimages.map((img, i) => (
-                            <div className={`carousel-item ${i === 0 ? 'active' : ''}`} key={i}>
+                          {/* Show video first if present */}
+                          {product.propertyVideo && (
+                            <div className="carousel-item active">
+                             <video
+  className="d-block w-100 rounded-start p-2"
+  controls
+  autoPlay
+  muted
+  loop
+  style={{
+    objectFit: "cover",
+    maxHeight: "250px",
+    borderRadius: "20px",
+  }}
+>
+  <source
+    src={`${process.env.REACT_APP_API_URL}/${product.propertyVideo.replace("\\", "/")}`}
+    type="video/mp4"
+  />
+  Your browser does not support the video tag.
+</video>
+
+                            </div>
+                          )}
+
+                          {/* Show images */}
+                          {product.PropertyImages?.map((img, i) => (
+                            <div
+                              className={`carousel-item ${
+                                !product.propertyVideo && i === 0 ? "active" : ""
+                              }`}
+                              key={i}
+                            >
                               <img
                                 src={`${process.env.REACT_APP_API_URL}/${img.replace("\\", "/")}`}
                                 className="d-block w-100 rounded-start p-2"
                                 alt={`Slide ${i}`}
-                                style={{ objectFit: "cover", maxHeight: "250px", borderRadius: "20px" }}
+                                style={{
+                                  objectFit: "cover",
+                                  maxHeight: "250px",
+                                  borderRadius: "20px",
+                                }}
                               />
                             </div>
                           ))}
                         </div>
-                        {product.galleryimages.length > 1 && (
+
+                        {/* Show controls only if more than 1 item */}
+                        {(product.PropertyImages?.length || 0) + (product.propertyVideo ? 1 : 0) > 1 && (
                           <>
-                            <button className="carousel-control-prev" type="button" data-bs-target={`#carousel-${product._id}`} data-bs-slide="prev">
-                              <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <button
+                              className="carousel-control-prev"
+                              type="button"
+                              data-bs-target={`#carousel-${product._id}`}
+                              data-bs-slide="prev"
+                            >
+                              <span
+                                className="carousel-control-prev-icon"
+                                aria-hidden="true"
+                              ></span>
                             </button>
-                            <button className="carousel-control-next" type="button" data-bs-target={`#carousel-${product._id}`} data-bs-slide="next">
-                              <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                            <button
+                              className="carousel-control-next"
+                              type="button"
+                              data-bs-target={`#carousel-${product._id}`}
+                              data-bs-slide="next"
+                            >
+                              <span
+                                className="carousel-control-next-icon"
+                                aria-hidden="true"
+                              ></span>
                             </button>
                           </>
                         )}
@@ -290,21 +336,26 @@ const [maxPrice, setMaxPrice] = useState('');
 
                   <div className="col-md-7">
                     <div className="card-body">
-                      <h5 className="card-title mb-1">{product.name}</h5>
-                      <p>{product.location}</p>
+                        <Link to={`/ProductView/${product._id}`}>
+                        <h5 className="card-title mb-1">{product.bedrooms}BNK {product.bathrooms} Bath</h5>
+                      </Link>
+                     
+                      <p>{product.locality}</p>
 
                       <div className="d-flex gap-3 flex-wrap mb-2">
-                        <span className="text-muted"><FaBed /> {product.noBedroom} BHK</span>
-                        <span className="text-muted"><FaRulerCombined /> {product.overallSize} sq.ft</span>
-                        <span className="text-muted"><FaHome /> {product.Typeofproperty}</span>
-                        <span className="text-muted"><FaTools /> {product.ConstructionStatus}</span>
+                        <span className="text-muted"><FaBed /> {product.bedrooms} BHK</span>
+                        <span className="text-muted"><FaRulerCombined /> {product.buildUpArea} sq.ft</span>
+                        <span className="text-muted"><FaHome /> {product.kindofPropertyDetails}</span>
+                        <span className="text-muted"><FaTools /> {product.availabilityStatus}</span>
                       </div>
 
-                      <p className="card-text text-muted pricedetailscategory">₹{product.price}</p>
-                      <p className="card-text"><small className="text-muted">{product.description}</small></p>
+                      <p className="card-text text-muted pricedetailscategory">₹{product.expectedPrice}</p>
+                      <p className="card-text"><small className="text-muted">{product.aboutproperty}</small></p>
 
                       <div className="d-flex justify-content-between align-items-center">
-                        <p>{formatDistanceToNow(new Date(product.createdAt), { addSuffix: true })}</p>
+                        <p>
+                          Dealer:{formatDistanceToNow(new Date(product.createdAt), { addSuffix: true })}
+                          </p>
                         <form onSubmit={handleEnquiry} className="d-inline">
                           <input type="hidden" name="productname" value={product.name} />
                           <input type="hidden" name="product_id" value={product._id} />

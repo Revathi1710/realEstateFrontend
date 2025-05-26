@@ -30,10 +30,13 @@ const ProductView = () => {
   const [galleryImages, setGalleryImages] = useState([]);
 
   // Modal state
+  const [numberViewEnable, setNumberViewEnable] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [activeSection, setActiveSection] = useState('overview');
-
+  const [showNumber, setShowNumber] = useState(false);
+  const [ownerNumber, setOwnerNumber] = useState('');
 const scrollToSection = (sectionId) => {
   const element = document.getElementById(`${sectionId}-container`);
   if (element) {
@@ -54,8 +57,23 @@ const scrollToSection = (sectionId) => {
   };
 
   const handleTabClick = (tab) => setActiveTab(tab);
-
+useEffect(() => {
+  const BUSINESS_ID = '6811cd66ebc5f31faa61db1f';
+  fetch(`${process.env.REACT_APP_API_URL}/OTPenable/${BUSINESS_ID}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data?.NumberViewEnable) {
+        setNumberViewEnable(true);
+      } else {
+        setNumberViewEnable(false);
+      }
+    })
+    .catch(err => {
+      console.error("Failed to fetch business settings:", err);
+    });
+}, []);
   useEffect(() => {
+    
     const fetchProduct = async () => {
       try {
         const productResponse = await axios.get(`${process.env.REACT_APP_API_URL}/PropertyView/${id}`);
@@ -117,6 +135,7 @@ const scrollToSection = (sectionId) => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
+
   return (
     <div>
       <Navbar />
@@ -137,9 +156,24 @@ const scrollToSection = (sectionId) => {
               </div>
             </div>
             <div className='col-sm-4'>
-              <button type="button" className="btn btn-primary sendenq" onClick={handleModalOpen}>
-                View Number
-              </button>
+             <div className='col-sm-4'>
+  {!showNumber && (
+    <button className="btn btn-primary sendenq" onClick={handleModalOpen}>
+      <i className="fa fa-phone"></i> View Number
+    </button>
+  )}
+ {showNumber && (
+    <button className="btn btn-primary sendenq" onClick={handleModalOpen}>
+      <i className="fa fa-phone"></i> View Number
+    </button>
+  )}
+  {numberViewEnable && showNumber && (
+    <button className="btn btn-primary sendenq" onClick={handleModalOpen}>
+      <i className="fa fa-phone"></i> {ownerNumber}
+    </button>
+  )}
+</div>
+
               {message && <p className="mt-2 text-success">{message}</p>}
             </div>
         
@@ -352,13 +386,14 @@ const scrollToSection = (sectionId) => {
 
 
           </div>
-          {/* Modal component */}
-          <EnquirySendBuilder
-            show={showModal}
-            handleClose={handleModalClose}
-            product={selectedProduct}
-            vendorData={product.vendorId}
-          />
+             <EnquirySendBuilder
+        show={showModal}
+        handleClose={handleModalClose}
+        product={selectedProduct}
+        vendorData={product.vendorId}
+        setShowNumber={setShowNumber}
+        setOwnerNumber={setOwnerNumber}
+      />
 
          
          

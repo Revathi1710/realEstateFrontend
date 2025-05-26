@@ -3,7 +3,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import './EnquirySendBuilder.css';
 
-const EnquirySendBuilder = ({ show, handleClose, product, vendorData }) => {
+const EnquirySendBuilder = ({ show, handleClose, product, vendorData, setShowNumber, setOwnerNumber }) => {
   const [userData, setUserData] = useState({
     fname: '',
     number: '',
@@ -12,6 +12,8 @@ const EnquirySendBuilder = ({ show, handleClose, product, vendorData }) => {
 
   const [isDealer, setIsDealer] = useState(null);
   const [buyPlan, setBuyPlan] = useState('');
+  const [showMobileNumber, setShowMobileNumber] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchBuilderData = async () => {
@@ -46,38 +48,43 @@ const EnquirySendBuilder = ({ show, handleClose, product, vendorData }) => {
     }
   }, [show]);
 
-  const handleEnquirySubmit = async () => {
-    if (!userData.fname || !userData.number || !userData.email) {
-      alert('Please fill all the required fields.');
-      return;
-    }
+ const handleEnquirySubmit = async () => {
+  if (!userData.fname || !userData.number || !userData.email) {
+    alert('Please fill all the required fields.');
+    return;
+  }
 
-    const enquiryPayload = {
-      customerId: localStorage.getItem('vendorId'),
-      customername: userData.fname,
-      customerIdNumber: userData.number,
-      customerEmail: userData.email,
-      isBuilder: isDealer,
-      buyPlan,
-      property_id: product?._id || '',
-      ownerId: vendorData?._id || '',
-      ownerName: vendorData?.fname || '',
-      ownerNumber: vendorData?.number || ''
-    };
-
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/sendEnquiryProperty`, enquiryPayload);
-      if (response.data.status === 'ok') {
-        alert('Enquiry sent successfully!');
-        handleClose();
-      } else {
-        alert('Failed to send enquiry');
-      }
-    } catch (err) {
-      console.error('Error sending enquiry:', err);
-      alert('Something went wrong.');
-    }
+  const enquiryPayload = {
+    customerId: localStorage.getItem('vendorId'),
+    customername: userData.fname,
+    customerIdNumber: userData.number,
+    customerEmail: userData.email,
+    isBuilder: isDealer,
+    buyPlan,
+    property_id: product?._id || '',
+    ownerId: vendorData?._id || '',
+    ownerName: vendorData?.fname || '',
+    ownerNumber: vendorData?.number || ''
   };
+
+  try {
+    setSubmitting(true);
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/sendEnquiryProperty`, enquiryPayload);
+    if (response.data.status === 'ok') {
+      setShowNumber(true);
+      setOwnerNumber(vendorData?.number || '');
+      handleClose(); // ✅ Automatically close the modal
+    } else {
+      alert('Failed to send enquiry');
+    }
+  } catch (err) {
+    console.error('Error sending enquiry:', err);
+    alert('Something went wrong.');
+  } finally {
+    setSubmitting(false);
+  }
+};
+
 
   return (
     <div className='buildersend-container'>
@@ -181,16 +188,18 @@ const EnquirySendBuilder = ({ show, handleClose, product, vendorData }) => {
 
               <Form.Check
                 className="mb-3"
-                label={
-                  <>
-                    I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a>
-                  </>
-                }
+                label={<>I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></>}
               />
 
-              <Button onClick={handleEnquirySubmit} className="btn-dark w-100">
-                View Number
-              </Button>
+              {showMobileNumber ? (
+                <div className="alert alert-success text-center">
+                  <strong>Owner Mobile Number:</strong><br /> {vendorData?.number}
+                </div>
+              ) : (
+                <Button onClick={handleEnquirySubmit} className="btn-dark w-100" disabled={submitting}>
+                  {submitting ? 'Sending...' : 'View Number'}
+                </Button>
+              )}
             </div>
           </div>
         </Modal.Body>

@@ -19,6 +19,7 @@ import PropertyProfile from  './components/PropertyProfile';
 import PropertyImage from  './components/PropertyImage';
 import Pricedetails from './components/Pricedetails';
 import PropertyPreview from './components/propertyPreview';
+import SearchResults from './components/SearchResults';
 import BuilderEnquiryList from './Vendors/BuilderEnquiry';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -133,13 +134,16 @@ function App() {
           <Route path="/vendor/logout" element={<vendorLogout />} />
           <Route path="/TextEditor" element={<TextEditor />} />
           <Route path="/search" element={<SearchNavbar />} />
+               <Route path="/search-results" element={<SearchResults />} />
+          
           <Route path="/postproperty/primarydetails" element={<PrimaryDetails />} />
           <Route path="/postproperty/locationDetails" element={<LocationDetails />} />
           <Route path="/postproperty/propertyProfile" element={<PropertyProfile />} />
           <Route path="/postproperty/PropertyImage" element={<PropertyImage />} />
           <Route path='/postproperty/Pricedetails' element={<Pricedetails />}/>
           <Route path='/propertyPreview/:id' element={<PropertyPreview />}/>
-          
+          <Route path='/postproperty/Pricedetails' element={<Pricedetails />}/>
+           <Route path='/postproperty/Pricedetails' element={<Pricedetails />}/>
           {/* User Details route */}
           <Route path="/userDetails" element={<UserDetails />} />
           {/* SuperAdmin route */}

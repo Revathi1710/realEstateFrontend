@@ -1,109 +1,118 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './AllCategoryHome.css'; // Import your CSS styles
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Link } from 'react-router-dom';
 
-const AllCategory = () => {
-  const [categories, setCategories] = useState([]);
-  const [subCategories, setSubCategories] = useState({});
-  const [message, setMessage] = useState('');
+function RecentAddedProperty() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const scrollRef = useRef(null);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/getCategoryHome`);
-        const data = response.data;
-
-        if (data.status === 'ok') {
-          setCategories(data.data); // Set data to 'categories' state
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/getCategoryHome`)
+      .then((response) => {
+        if (response.data.status === "ok") {
+          setProducts(response.data.data);
         } else {
-          setMessage(data.message);
+          setError(response.data.message);
         }
-      } catch (error) {
-        setMessage('An error occurred: ' + error.message);
-      }
-    };
-
-    fetchCategories();
+        setLoading(false);
+      })
+      .catch(() => {
+        setError("An error occurred while fetching data.");
+        setLoading(false);
+      });
   }, []);
 
-  const handleMouseEnter = async (categoryId) => {
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/getSubCategory/${categoryId}`);
-      const data = response.data;
-
-      if (data.status === 'ok') {
-        setSubCategories((prev) => ({
-          ...prev,
-          [categoryId]: data.data, // Store subcategories by category ID
-        }));
-      } else {
-        setMessage(data.message);
-      }
-    } catch (error) {
-      setMessage('An error occurred: ' + error.message);
-    }
+  const scroll = (direction) => {
+    const cardWidth = scrollRef.current.querySelector(".category-card")?.offsetWidth || 300;
+    scrollRef.current.scrollBy({
+      left: direction === "next" ? cardWidth : -cardWidth,
+      behavior: "smooth",
+    });
   };
 
-  const handleMouseLeave = (categoryId) => {
-    setSubCategories((prev) => ({
-      ...prev,
-      [categoryId]: [], // Clear subcategories on mouse leave
-    }));
-  };
-
-  const handleView = (categoryId) => {
-    if (categoryId) {
-      window.location.href = `/CategoryView/${categoryId}`;
+  const formatIndianPrice = (amount) => {
+    if (amount >= 10000000) {
+      return (amount / 10000000).toFixed(2).replace(/\.00$/, '') + ' Crore';
+    } else if (amount >= 100000) {
+      return (amount / 100000).toFixed(2).replace(/\.00$/, '') + ' Lac';
+    } else if (amount >= 1000) {
+      return (amount / 1000).toFixed(2).replace(/\.00$/, '') + ' Thousand';
     } else {
-      setMessage('Category ID is undefined');
+      return amount;
     }
   };
+
+  const colorClasses = ['bg-light', 'bg-warning', 'bg-info', 'bg-success'];
 
   return (
-    <div className="container2">
-      {message && <p>{message}</p>}
-      <div className="category-list">
-        {categories.map((cat, index) => (
-          <div
-            key={index}
-            className="homecategoryside mb-2"
-            onMouseEnter={() => handleMouseEnter(cat._id)}
-            onMouseLeave={() => handleMouseLeave(cat._id)}
-          >
-            <div className="sidecategoryHome" onClick={() => handleView(cat._id)}>
-              {cat.image ? (
-                <img
-                  src={`${process.env.REACT_APP_API_URL}/${cat.image.replace('\\', '/')}`}
-                  className="card-img-top categoryimageside"
-                  alt={cat.name}
-                />
-              ) : (
-                <img
-                  src="path_to_default_image.jpg"
-                  className="card-img-top categoryimage2"
-                  alt="default"
-                />
-              )}
-              <div className="card-body">
-                <h5 className="card-title categorynameSide ellipsis">{cat.name}</h5>
-              </div>
-            </div>
-            {subCategories[cat._id] && subCategories[cat._id].length > 0 && (
-              <div className="subcategory-dropdown">
-                <div className="row">
-                  {subCategories[cat._id].map((subCat, subIndex) => (
-                    <div key={subIndex} className="col-sm-4 subcategory-item">
-                      {subCat.name}
-                    </div>
-                  ))}
+    <div className="container mt-5">
+      {error && <p className="text-danger">{error}</p>}
+
+      <div className="position-relative">
+        <button
+          onClick={() => scroll("prev")}
+          className="btn btn-light position-absolute top-50 start-0 translate-middle-y z-3"
+        >
+          ‹
+        </button>
+
+        <div
+          className="d-flex overflow-auto gap-3 px-2"
+          style={{ scrollBehavior: "smooth" }}
+          ref={scrollRef}
+        >
+          {products.map((product, index) => {
+            const cardColor = colorClasses[index % colorClasses.length];
+            return (
+              <div
+                key={product._id}
+                className={`category-card flex-shrink-0 ${cardColor}`}
+                style={{ width: "25%" }}
+              >
+                <div className="card recentlyAdded-card h-100">
+                  <div className="recent-image-container">
+                    {product.PropertyImages && product.PropertyImages.length > 0 ? (
+                      <Link to={`/ProductView/${product._id}`}>
+                        <img
+                          src={`${process.env.REACT_APP_API_URL}/${product.PropertyImages[0].replace('\\', '/')}`}
+                          alt="Property"
+                          className="card-img-top homeproductimage"
+                        />
+                      </Link>
+                    ) : (
+                      <Link to={`/ProductView/${product._id}`}>
+                        <img
+                          src="/path_to_default_image.jpg"
+                          alt="Default Property"
+                          className="card-img-top homeproductimage"
+                        />
+                      </Link>
+                    )}
+                  </div>
+                  <div className="card-body text-center">
+                    <Link to={`/Categoryview/${product._id}`} className="card-title fw-bold text-dark text-decoration-none">
+                      {product.name}
+                    </Link>
+                  </div>
                 </div>
               </div>
-            )}
-          </div>
-        ))}
+            );
+          })}
+        </div>
+
+        <button
+          onClick={() => scroll("next")}
+          className="btn btn-light position-absolute top-50 end-0 translate-middle-y z-3"
+        >
+          ›
+        </button>
       </div>
     </div>
   );
-};
+}
 
-export default AllCategory;
+export default RecentAddedProperty;

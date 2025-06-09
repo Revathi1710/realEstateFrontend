@@ -1,0 +1,30 @@
+
+
+
+.cardImageContainer{
+    height: 254px !important;
+}
+.category-inner-container{
+    height: 100%;
+}
+.feacture-product-name-home{
+     font-weight: 510;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+}
+.bhkchoice-container{
+    background: #fff5e4;
+    margin-bottom: 20px;
+    padding:30px 10px;
+    border-radius: 10px;
+}
+.bnkcontainer-box{
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    width: 18% !important;
+    margin: auto;
+}

@@ -100,7 +100,7 @@ function Header() {
       
 
         {isLoaded && (
-          <Autocomplete onLoad={(auto) => (autocompleteRef.current = auto)} onPlaceChanged={onPlaceChanged}>
+          <Autocomplete  onLoad={(auto) => (autocompleteRef.current = auto)} onPlaceChanged={onPlaceChanged} className='col-sm-10'>
             <input
               type="text"
               className="form-control border-0 bg-light"

@@ -11,6 +11,9 @@ import TopCategory from '../components/TopCategories';
 import Footer from '../components/Footer';
 import HomeForm from './homeForm';
 import AllHomeTowerBanner from './AllHometowerBanner';
+import RecentAddedProperty from './RecentAddedProperty';
+import MoveInProperty from './MoveInProperty';
+import BNKchoice from './BNKchoice';
 import './home.css';
 
 class Index extends Component {
@@ -78,15 +81,30 @@ class Index extends Component {
         <TopCategory />
         </div>*/}
             <div className="category-container feature-product-container ">
-              <h2 className="titlehome mb-4">Premium Builders</h2>
+              <h2 className="titlehome mb-4">Projects in High Demand</h2>
               {/* Pass the selected location as a prop to AllProducts */}
               <AllProducts location={this.state.location} />
-            </div></div>
+            </div>
+              <div className='container mt-2'>
+                <h2 className="titlehome mb-4">Recently Added Property</h2>
+                <RecentAddedProperty />
+              </div>
+             
+                 <div className='container mt-2'>
+               
+                <BNKchoice />
+              </div>
+                <div className='container mt-2'>
+                <h2 className="titlehome mb-4">Move in now,  later</h2>
+                <MoveInProperty />
+              </div>
+            </div>
             <div className='col-sm-2'>
             <AllHomeTowerBanner />
             </div>
          
         </div></div>
+      
        {/* <Homerecent/>*/}
        < Footer/>
       </div>

@@ -41,7 +41,7 @@ const AllHomeTowerBanner = () => {
     : null;
 
   return (
-    <div style={{ overflow: 'hidden', marginTop: '120px', padding: '10px' }}>
+    <div style={{ overflow: 'hidden', marginTop: '120px', padding: '10px' }} className='topbanner-container'>
       {imageUrl ? (
       <a href={currentBanner.URL || '#'} target="_blank" rel="noopener noreferrer">
       <img
